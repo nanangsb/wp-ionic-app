@@ -8,26 +8,37 @@ import { Observable } from 'rxjs';
 })
 export class ApiService {
 
-	private domains: string[];
+	private domains: string[] = [];
+	private activeDomain: string;
 	private namespace: string;
 	private isHttps: boolean;
-	private url: string;
 
 	private defaultHeaders: { [name: string]: string } = {};
 
 	constructor(private http: HttpClient, private translate: TranslateService) {
-		// Website domain
-		this.domains = 'muslim.or.id','muslimah.or.id','almanhaj.or.id','rumaysho.com';
+		// Default domains
+		this.domains = ['muslim.or.id', 'rumaysho.com', 'almanhaj.or.id'];
+		this.activeDomain = this.domains[0]; // Set default active domain
 
 		// The path of endpoints
 		this.namespace = 'wp-json';
 
 		// HTTPS support
 		this.isHttps = true;
+	}
 
-		//this.url = (this.isHttps ? 'https://' : 'http://') + this.domain + '/' + this.namespace;
-		this.url = (this.isHttps ? 'https://' : 'http://') + this.domains.join('/') + '/' + this.namespace;
+	// Method to construct the URL based on the active domain and other properties
+	private constructUrl(): string {
+		return (this.isHttps ? 'https://' : 'http://') + this.activeDomain + '/' + this.namespace;
+	}
 
+	// Method to change the active domain
+	setActiveDomain(domain: string) {
+		if (this.domains.includes(domain)) {
+			this.activeDomain = domain;
+		} else {
+			throw new Error(`Domain ${domain} is not in the list of available domains.`);
+		}
 	}
 
 	get(endpoint: string, params?: any, reqOpts?: any): Observable<any> {
@@ -51,27 +62,23 @@ export class ApiService {
 			Object.assign(reqOpts.params, params);
 		}
 
-		if (!reqOpts) {
-
-		}
-
-		return this.http.get(this.url + '/' + endpoint, this.getRequestOptions(reqOpts));
+		return this.http.get(this.constructUrl() + '/' + endpoint, this.getRequestOptions(reqOpts));
 	}
 
 	post(endpoint: string, body: any, reqOpts?: any): Observable<any> {
-		return this.http.post(this.url + '/' + endpoint, body, this.getRequestOptions(reqOpts));
+		return this.http.post(this.constructUrl() + '/' + endpoint, body, this.getRequestOptions(reqOpts));
 	}
 
 	put(endpoint: string, body: any, reqOpts?: any): Observable<any> {
-		return this.http.put(this.url + '/' + endpoint, body, this.getRequestOptions(reqOpts));
+		return this.http.put(this.constructUrl() + '/' + endpoint, body, this.getRequestOptions(reqOpts));
 	}
 
 	delete(endpoint: string, reqOpts?: any): Observable<any> {
-		return this.http.delete(this.url + '/' + endpoint, this.getRequestOptions(reqOpts));
+		return this.http.delete(this.constructUrl() + '/' + endpoint, this.getRequestOptions(reqOpts));
 	}
 
 	patch(endpoint: string, body: any, reqOpts?: any) {
-		return this.http.patch(this.url + '/' + endpoint, body, this.getRequestOptions(reqOpts));
+		return this.http.patch(this.constructUrl() + '/' + endpoint, body, this.getRequestOptions(reqOpts));
 	}
 
 	private getRequestOptions(reqOpts) {
