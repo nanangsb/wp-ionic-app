@@ -8,7 +8,7 @@ import { Observable } from 'rxjs';
 })
 export class ApiService {
 
-	private domain: string;
+	private domain: string[];
 	private namespace: string;
 	private isHttps: boolean;
 	private url: string;
@@ -25,7 +25,8 @@ export class ApiService {
 		// HTTPS support
 		this.isHttps = true;
 
-		this.url = (this.isHttps ? 'https://' : 'http://') + this.domain + '/' + this.namespace;
+		//this.url = (this.isHttps ? 'https://' : 'http://') + this.domain + '/' + this.namespace;
+		this.url = (this.isHttps ? 'https://' : 'http://') + this.domains.join('/') + '/' + this.namespace;
 
 	}
 
