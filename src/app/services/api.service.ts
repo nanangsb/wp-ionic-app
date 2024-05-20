@@ -8,7 +8,7 @@ import { Observable } from 'rxjs';
 })
 export class ApiService {
 
-	private domain: string[];
+	private domains: string[];
 	private namespace: string;
 	private isHttps: boolean;
 	private url: string;
