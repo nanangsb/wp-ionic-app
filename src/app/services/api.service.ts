@@ -17,7 +17,7 @@ export class ApiService {
 
 	constructor(private http: HttpClient, private translate: TranslateService) {
 		// Website domain
-		this.domain = 'almanhaj.or.id','rumaysho.com';
+		this.domain = 'rumaysho.com';
 
 		// The path of endpoints
 		this.namespace = 'wp-json';
